@@ -215,4 +215,3 @@ class CompanyIntelligence(Base):
 Index("ix_jobs_company_relevance", Job.company_id, Job.relevance_level)
 Index("ix_jobs_posted_relevance", Job.posted_at, Job.relevance_level)
 Index("ix_messages_channel_date", Message.channel_id, Message.date)
-Index("ix_companies_normalized_name", Company.normalized_name)
