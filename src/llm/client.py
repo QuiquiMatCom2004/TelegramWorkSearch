@@ -2,10 +2,17 @@ from openai import AsyncOpenAI
 from typing import Optional, List, Dict, Any
 import logging
 import asyncio
+import re
 
 from config.settings import settings
 
 logger = logging.getLogger(__name__)
+
+
+def strip_json_fence(text: str) -> str:
+    """Strip a ```json ... ``` (or ``` ... ```) fence some models wrap JSON output in."""
+    match = re.match(r"^```(?:json)?\s*(.*?)\s*```$", text.strip(), re.DOTALL)
+    return match.group(1) if match else text
 
 
 class LLMClient:
@@ -128,7 +135,7 @@ Return JSON with:
             max_tokens=4000
         )
         import json
-        return json.loads(response)
+        return json.loads(strip_json_fence(response))
 
     async def analyze_job_for_application(
         self,
@@ -175,4 +182,4 @@ Return JSON with:
             max_tokens=3000
         )
         import json
-        return json.loads(response)
+        return json.loads(strip_json_fence(response))

@@ -4,7 +4,7 @@ import json
 import logging
 
 from src.db.models import UserProfile, JobRelevance
-from src.llm.client import LLMClient
+from src.llm.client import LLMClient, strip_json_fence
 
 logger = logging.getLogger(__name__)
 
@@ -113,10 +113,10 @@ class JobClassifier:
                 prompt,
                 system_prompt="You are an expert technical recruiter. Return only valid JSON.",
                 temperature=0.1,
-                max_tokens=1000
+                max_tokens=2000
             )
-            
-            data = json.loads(response)
+
+            data = json.loads(strip_json_fence(response))
             return JobClassification(**data)
             
         except json.JSONDecodeError as e:
