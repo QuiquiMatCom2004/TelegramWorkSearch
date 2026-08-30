@@ -27,7 +27,7 @@ app = typer.Typer(help="Telegram Job Search Intelligence")
 console = Console()
 
 # Global instances
-monitor = JobChannelMonitor()
+channel_monitor = JobChannelMonitor()
 classifier = JobClassifier()
 intel_service = CompanyIntelligenceService()
 
@@ -113,14 +113,14 @@ async def _setup_channels():
     
     if channels:
         console.print(f"\nJoining {len(channels)} channels...")
-        await monitor.start()
+        await channel_monitor.start()
         try:
-            joined = await monitor.join_channels(channels)
+            joined = await channel_monitor.join_channels(channels)
             console.print(f"✅ Joined {len(joined)} channels:")
             for ch in joined:
                 console.print(f"  • {ch.title} (@{ch.username or ch.telegram_id})")
         finally:
-            await monitor.stop()
+            await channel_monitor.stop()
     else:
         console.print("No channels added.")
 
@@ -135,10 +135,10 @@ def scan(
     console.print(Panel.fit("🔍 [bold]Scanning Channels[/bold]", border_style="green"))
     
     async def _scan():
-        await monitor.start()
+        await channel_monitor.start()
         try:
             if channels:
-                await monitor.join_channels(channels)
+                await channel_monitor.join_channels(channels)
             
             async with db.session() as session:
                 channel_repo = ChannelRepository(session)
@@ -156,7 +156,7 @@ def scan(
             ) as progress:
                 for channel in chs:
                     task = progress.add_task(f"Scanning {channel.title}...", total=None)
-                    count = await monitor.process_channel(channel, limit=limit, days_back=days)
+                    count = await channel_monitor.process_channel(channel, limit=limit, days_back=days)
                     total_processed += count
                     progress.update(task, description=f"✅ {channel.title}: {count} new messages")
             
@@ -174,10 +174,10 @@ def scan(
                 if k != "by_level":
                     table.add_row(k.replace("_", " ").title(), str(v))
             console.print(table)
-            
+
         finally:
-            await monitor.stop()
-    
+            await channel_monitor.stop()
+
     asyncio.run(_scan())
 
 
@@ -192,15 +192,15 @@ def monitor(
     console.print("Press Ctrl+C to stop\n")
     
     async def _monitor():
-        await monitor.start()
+        await channel_monitor.start()
         try:
             if channels:
-                await monitor.join_channels(channels)
-            await monitor.run_monitoring(channels or [], interval)
+                await channel_monitor.join_channels(channels)
+            await channel_monitor.run_monitoring(channels or [], interval)
         except KeyboardInterrupt:
             console.print("\n🛑 Stopping monitor...")
         finally:
-            await monitor.stop()
+            await channel_monitor.stop()
     
     asyncio.run(_monitor())
 
