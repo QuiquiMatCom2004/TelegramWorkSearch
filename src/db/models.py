@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Column, Integer, String, Text, DateTime, Float, Boolean, 
+    Column, Integer, BigInteger, String, Text, DateTime, Float, Boolean,
     ForeignKey, Table, Index, Enum as SQLEnum
 )
 from sqlalchemy.orm import relationship, declarative_base
@@ -23,7 +23,7 @@ class Channel(Base):
     __tablename__ = "channels"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    telegram_id = Column(Integer, unique=True, nullable=False, index=True)
+    telegram_id = Column(BigInteger, unique=True, nullable=False, index=True)
     username = Column(String(255), unique=True, nullable=True)
     title = Column(String(500), nullable=False)
     description = Column(Text, nullable=True)
@@ -71,7 +71,7 @@ class Job(Base):
     __tablename__ = "jobs"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    telegram_message_id = Column(Integer, nullable=False, index=True)
+    telegram_message_id = Column(BigInteger, nullable=False, index=True)
     channel_id = Column(Integer, ForeignKey("channels.id"), nullable=False)
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=True)
     
@@ -108,11 +108,11 @@ class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    telegram_id = Column(Integer, nullable=False, index=True)
+    telegram_id = Column(BigInteger, nullable=False, index=True)
     channel_id = Column(Integer, ForeignKey("channels.id"), nullable=False)
     text = Column(Text, nullable=True)
     date = Column(DateTime, nullable=False, index=True)
-    sender_id = Column(Integer, nullable=True)
+    sender_id = Column(BigInteger, nullable=True)
     is_job_post = Column(Boolean, default=False, index=True)
     processed = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
