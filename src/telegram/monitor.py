@@ -157,7 +157,7 @@ class JobChannelMonitor:
                 telegram_message_id=telegram_msg.id,
                 channel_id=channel.id,
                 company_id=company.id,
-                message_id=message.id,
+                raw_text=msg_text,
                 title=self._extract_title(msg_text),
                 description=msg_text[:5000],
                 posted_at=telegram_msg.date.replace(tzinfo=None),
