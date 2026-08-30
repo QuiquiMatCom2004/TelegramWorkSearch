@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     # OpenRouter
     openrouter_api_key: str = Field(..., description="OpenRouter API key")
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    llm_model: str = "anthropic/claude-3.5-sonnet"
+    llm_model: str = "anthropic/claude-sonnet-5"
     llm_temperature: float = 0.3
 
     # Database
