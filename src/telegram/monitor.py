@@ -1,5 +1,5 @@
 from telethon import TelegramClient, events
-from telethon.tl.types import Channel, Message, MessageMediaPhoto, MessageMediaDocument
+from telethon.tl.types import Channel as TelethonChannel, MessageMediaPhoto, MessageMediaDocument
 from telethon.errors import FloodWaitError, ChannelPrivateError
 from datetime import datetime, timedelta
 from typing import List, Optional, Callable, Awaitable
@@ -10,8 +10,8 @@ import re
 from config.settings import settings
 from src.db.database import db
 from src.db.repositories import (
-    ChannelRepository, CompanyRepository, JobRepository, 
-    MessageRepository, UserProfileRepository
+    ChannelRepository, CompanyRepository, JobRepository,
+    MessageRepository, UserProfileRepository, JobAnalysisRepository
 )
 from src.db.models import Channel, Company, Message, Job, JobRelevance
 from src.llm.classifier import JobClassifier
@@ -50,7 +50,7 @@ class JobChannelMonitor:
         for username in channel_usernames:
             try:
                 entity = await self.client.get_entity(username)
-                if isinstance(entity, Channel):
+                if isinstance(entity, TelethonChannel):
                     async with db.session() as session:
                         repo = ChannelRepository(session)
                         channel = await repo.get_or_create(

@@ -12,9 +12,10 @@ Base = declarative_base()
 
 
 class JobRelevance(str, enum.Enum):
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
+    HIGHLY_RELEVANT = "highly_relevant"
+    RELEVANT = "relevant"
+    POTENTIALLY_RELEVANT = "potentially_relevant"
+    NOT_RELEVANT = "not_relevant"
     REJECTED = "rejected"
 
 
@@ -98,7 +99,7 @@ class Job(Base):
     fetched_at = Column(DateTime, default=datetime.utcnow)
     processed_at = Column(DateTime, nullable=True)
 
-    channel = relationship("Channel", back_populates="messages")
+    channel = relationship("Channel")
     company = relationship("Company", back_populates="jobs")
     analyses = relationship("JobAnalysis", back_populates="job")
 
@@ -117,7 +118,6 @@ class Message(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     channel = relationship("Channel", back_populates="messages")
-    job = relationship("Job", back_populates="message", uselist=False)
 
 
 class JobAnalysis(Base):

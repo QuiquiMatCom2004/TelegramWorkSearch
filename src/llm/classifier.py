@@ -1,21 +1,12 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional, Literal
-from enum import Enum
 import json
 import logging
 
-from src.db.models import UserProfile
+from src.db.models import UserProfile, JobRelevance
 from src.llm.client import LLMClient
 
 logger = logging.getLogger(__name__)
-
-
-class JobRelevance(str, Enum):
-    HIGHLY_RELEVANT = "highly_relevant"
-    RELEVANT = "relevant"
-    POTENTIALLY_RELEVANT = "potentially_relevant"
-    NOT_RELEVANT = "not_relevant"
-    REJECTED = "rejected"
 
 
 class JobClassification(BaseModel):
