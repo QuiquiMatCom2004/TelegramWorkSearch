@@ -201,19 +201,21 @@ class JobChannelMonitor:
             except:
                 pass
         
-        # Common patterns
+        # Common patterns. Company names are matched on a single line only
+        # ([ \t] instead of \s) and length-capped, so a missing keyword
+        # doesn't let the match run on through unrelated following sentences.
         patterns = [
-            r"(?:en|at|@)\s+([A-Z][a-zA-Z0-9\s&.]+?)(?:\s+(?:busca|busca|hiring|contrata|buscamos))",
-            r"^([A-Z][a-zA-Z0-9\s&.]{2,50}?)\s+(?:busca|busca|hiring|contrata)",
-            r"🏢\s*([A-Z][a-zA-Z0-9\s&.]{2,50})",
-            r"Company[:\s]+([A-Z][a-zA-Z0-9\s&.]{2,50})",
+            r"(?:en|at|@)[ \t]+([A-Z][a-zA-Z0-9 \t&.]{1,38}?)(?:[ \t]+(?:busca|hiring|contrata|buscamos))",
+            r"^([A-Z][a-zA-Z0-9 \t&.]{2,38}?)[ \t]+(?:busca|hiring|contrata)",
+            r"🏢[ \t]*([A-Z][a-zA-Z0-9 \t&.]{2,38})",
+            r"Company[:\s]+([A-Z][a-zA-Z0-9 \t&.]{2,38})",
         ]
-        
+
         for pattern in patterns:
-            match = re.search(pattern, text, re.IGNORECASE)
+            match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
             if match:
-                name = match.group(1).strip()
-                if len(name) > 2 and len(name) < 100:
+                name = match.group(1).strip().rstrip(".")
+                if len(name) > 2 and len(name) < 40 and name.count(".") <= 1:
                     return name
         
         # Fallback: check channel username/title

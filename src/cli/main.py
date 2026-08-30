@@ -312,7 +312,7 @@ def companies(
     
     async def _companies():
         with console.status("Generating report..."):
-            report = await intel_service.get_top_companies_report(limit=limit)
+            report = await intel_service.get_top_companies_report(limit=limit, min_relevant=min_jobs)
         
         if not report:
             console.print("No companies found. Run a scan first.")

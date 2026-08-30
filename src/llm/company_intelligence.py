@@ -153,14 +153,14 @@ class CompanyIntelligenceService:
             
             return intelligence
 
-    async def get_top_companies_report(self, limit: int = 20) -> List[Dict[str, Any]]:
+    async def get_top_companies_report(self, limit: int = 20, min_relevant: int = 3) -> List[Dict[str, Any]]:
         """Generate report on top companies by relevant job count"""
         from src.db.database import db
         from src.db.repositories import CompanyRepository, JobRepository
-        
+
         async with db.session() as session:
             company_repo = CompanyRepository(session)
-            companies = await company_repo.get_top_companies(limit=limit)
+            companies = await company_repo.get_top_companies(limit=limit, min_relevant=min_relevant)
             
             job_repo = JobRepository(session)
             report = []
