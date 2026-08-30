@@ -129,7 +129,7 @@ class JobRepository:
         return result.scalars().all()
 
     async def get_company_jobs(self, company_id: int, relevant_only: bool = False) -> List[Job]:
-        stmt = select(Job).where(Job.company_id == company_id)
+        stmt = select(Job).options(selectinload(Job.analyses)).where(Job.company_id == company_id)
         if relevant_only:
             stmt = stmt.where(Job.relevance_score >= 0.7)
         stmt = stmt.order_by(desc(Job.posted_at))
