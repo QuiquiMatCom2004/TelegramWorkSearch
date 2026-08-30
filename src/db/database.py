@@ -43,6 +43,8 @@ class Database:
 
     @asynccontextmanager
     async def session(self) -> AsyncGenerator[AsyncSession, None]:
+        if self.session_factory is None:
+            await self.initialize()
         async with self.session_factory() as session:
             try:
                 yield session
