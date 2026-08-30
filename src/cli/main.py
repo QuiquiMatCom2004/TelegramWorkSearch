@@ -448,7 +448,6 @@ def stats():
         table.add_column("Count", style="magenta")
         
         table.add_row("Channels", str(channels.scalar()))
-        table.add_column("Companies", style="cyan")
         table.add_row("Companies", str(companies.scalar()))
         table.add_row("Total Jobs", str(jobs.scalar()))
         table.add_row("Relevant Jobs (≥0.7)", str(relevant.scalar()))
